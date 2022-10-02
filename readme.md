@@ -6,11 +6,16 @@ Only works for unencrypted traffic. Requires `ngrep`. Useful in debugging connec
 # usage
 ````bash
 # assuming you have a broker listening on port 1883 on localhost
-$ sudo ngrep -d lo -x port 1883 | go run *.go
+$ sudo ngrep -d lo -x port 1883 | go run .
+````
+
+# test
+````bash
+$ go test
 ````
 
 # todo
-- [ ] tests. see https://github.com/karlpokus/logspam/blob/master/logspam_test.go
+- [x] tests. see https://github.com/karlpokus/logspam/blob/master/logspam_test.go
 - [ ] decrypt tls
 - [ ] parse client_id from CONNECT and use in output
 - [ ] replace ngrep w tcpdump
