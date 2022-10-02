@@ -10,13 +10,17 @@ import (
 )
 
 func main() {
-	err := start(os.Stdin, os.Stderr)
-	if err != nil {
-		log.Fatal(err)
+	select {
+	case err := <-start(os.Stdin, os.Stderr):
+		if err != nil {
+			log.Fatal(err)
+		}
+	case <-interrupt():
+		// noop
 	}
 }
 
-func start(r io.Reader, w io.Writer) error {
+func start(r io.Reader, w io.Writer) chan error {
 	log.SetOutput(w)
 	log.SetFlags(0)
 
@@ -28,12 +32,7 @@ func start(r io.Reader, w io.Writer) error {
 	go parse(textChan, packetChan)
 	go listen(r, textChan, errChan)
 
-	select {
-	case err := <-errChan:
-		return err
-	case <-interrupt():
-		return nil
-	}
+	return errChan
 }
 
 // listen reads from r and writes to textChan
